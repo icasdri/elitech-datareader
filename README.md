@@ -1,65 +1,43 @@
 Elitech RC4 / RC5 DataReader
 ====================================
 
-
 Description
 -----------
 
-This software is a data collecting tool, written in python for Temperature data logger RC-4/RC-5 and Temperature and Humidity data logger RC-4HC.
+This software is a data collecting tool, written in Python for Elitech data loggers.
 
-[Elitech RC-4](http://www.elitech.uk.com/temperature_logger/Elitech_UK__Mini_USB_Temperature_Data_logger_URC_4_149.html) / 
-[RC-4HC](http://www.elitech.uk.com/temperature_logger/RC_4HC_Temperature_and_Humidity_Data_Logger_150.html) / 
-[RC-5](http://www.e-elitech.com/jingChuang3/shouYe.do?operate=doProductDetail&chanpinId=156) 
-is a reasonable data logger.
+- [Elitech RC-4](http://www.elitech.uk.com/temperature_logger/Elitech_UK__Mini_USB_Temperature_Data_logger_URC_4_149.html)
+- [Elitech RC-4HC](http://www.elitech.uk.com/temperature_logger/RC_4HC_Temperature_and_Humidity_Data_Logger_150.html)
+- [Elitech RC-5](http://www.e-elitech.com/jingChuang3/shouYe.do?operate=doProductDetail&chanpinId=156) 
 
 **RC-5+(Note the plus "+" sign).** is not supperted.
 
-Enables to use RC-4/RC-5 on Mac, Linux, Windows.
-
 This is an unofficial tool. This tool was made by monitoring and guessing serial communication data. That is why this software is not perfect.
 
-Requirements
-------------
-
-- Python2.7, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
-- Serial Port Driver
-    - (for RC-4 series) Silicon Labs CP210x USB-UART bridge VCP driver.  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
-    - (for RC-5) CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html) (mac driver is unstable)
-        - for sierra Signed Mac OS Driver  
-            <https://blog.sengotta.net/signed-mac-os-driver-for-winchiphead-ch340-serial-bridge/>
-- pySerial (data access library for serial port)
-
-
 Setup
-------------
+-----
 
-1. Install Serial Port Driver.
-    - for RC-4 series: CP210x USB-UART bridge VCP driver.  Download and install CP210x driver for your platform.
- <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
-    - for RC-5: CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html)(mac driver is unstable)
-        - for sierra Signed Mac OS Driver  
-            <https://blog.sengotta.net/signed-mac-os-driver-for-winchiphead-ch340-serial-bridge/>
+1. Install serial port driver as necessary.
+    - For RC-4, CP210x driver is needed.
+    - For RC-5, CH340 driver is needed.
 
-2. install dependencies.
+2. Clone and install dependencies.
 
 ```
-$ python setup.py install
+git clone https://github.com/icasdri/elitech-datareader
+cd elitech-datareader
+pip3 install -r requirements.txt
 ```
 
-OR pip
-
+3. Run (note: examples below assume alias `elitech-datareader`, feel free to use something different)
 ```
-$ pip install elitech-datareader
-```
-
-3. Linux: Add yourself to the dialout group. Restart required.
-```
-sudo usermod -a -G dialout $USER
+alias elitech-datareader='python3 -m elitech'
+elitech-datareader --help
 ```
 
 
-Example(Script)
---------------
+Examples
+--------
 
 ### Initialize device.
 
@@ -182,7 +160,7 @@ If comunication unstable, then try `--ser_baudrate` and `--ser_timeout` option.
 $ elitech-datareader --command devinfo --ser_baudrate 115200 --ser_timeout=10 /dev/tty.SLAB_USBtoUART
 ```
 
-Example(Python module)
+Library
 -------
 
 ### Get device infomation.
@@ -204,7 +182,7 @@ device = elitech.Device("/dev/tty.SLAB_USBtoUART")
 body = device.get_data()
 for elm in body:
     print elm
-    
+
 ```
 
 ### Update param

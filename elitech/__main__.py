@@ -1,19 +1,21 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import os
+
 import argparse
-import elitech
 import datetime
-from elitech.msg import (
+import six
+
+from .device import Device
+from .msg import (
+    _bin,
     StopButton,
     ToneSet,
     AlarmSetting,
     TemperatureUnit,
-
 )
-from elitech.msg import _bin
-import six
-import os
+
 
 def main():
     args = parse_args()
@@ -39,7 +41,7 @@ def _convert_time(sec):
     return datetime.time(hour=hour, minute=min, second=sec)
 
 def command_simpleset(args):
-    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
+    device = Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
     device.init()
     dev_info = device.get_devinfo()
 
@@ -52,7 +54,7 @@ def command_simpleset(args):
     device.update(param_put)
 
 def command_get(args):
-    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
+    device = Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
     device.init()
 
     def output(data_list):
@@ -68,7 +70,7 @@ def command_get(args):
         device.get_data(callback=output)
 
 def command_latest(args):
-    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
+    device = Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
     device.init()
 
     def output(latest):
@@ -185,7 +187,7 @@ def parse_args():
     """
     :rtype: argparse.Namespace
     """
-    parser = argparse.ArgumentParser('description Elitech RC-4 / RC-5 data reader')
+    parser = argparse.ArgumentParser('elitech-datareader', usage='elitech-datareader [OPTIONS]... SERIAL_PORT')
     parser.add_argument('-c', "--command", choices=['init', 'get', 'latest', 'simple-set', 'set', 'devinfo', 'clock', 'raw'])
     parser.add_argument('-i', "--interval", type=int)
     parser.add_argument("--upper_limit", type=float)
@@ -210,7 +212,7 @@ def parse_args():
     parser.add_argument('--value_only', help='for latest command', action='store_true')
     parser.add_argument('--ser_baudrate', help='serial port baudrate default=115200', default=115200, type=int)
     parser.add_argument('--ser_timeout', help='serial port reading timeout sec', default=5, type=int)
-    parser.add_argument('serial_port')
+    parser.add_argument('serial_port', metavar='SERIAL_PORT', help='serial port of device to interact with')
     return parser.parse_args()
 
 
